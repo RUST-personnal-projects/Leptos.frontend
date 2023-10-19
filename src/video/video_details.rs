@@ -1,4 +1,4 @@
-use crate::Video;
+use super::videos::Video;
 use yew::prelude::*;
 
 #[derive(Properties, PartialEq)]

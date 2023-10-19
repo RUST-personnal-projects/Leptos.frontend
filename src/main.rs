@@ -1,60 +1,51 @@
 use yew::prelude::*;
-use gloo_net::http::Request;
-use gloo_console::warn;
-use wasm_bindgen::JsValue;
+use yew_router::prelude::*;
 
 mod video;
 
-use video::videos::{Video, VideosList};
-use video::video_details::VideoDetails;
+use video::videos::Videos;
 
-#[function_component(App)]
-fn app() -> Html {
-    let videos = use_state(|| vec![]);
-    {
-        let videos = videos.clone();
-        use_effect_with((), move |_| {
-            let videos = videos.clone();
-            wasm_bindgen_futures::spawn_local(async move {
-                let fetched_videos = Request::get("/tutorial/data.json")
-                    .send()
-                    .await
-                    .unwrap() 
-                    .json()
-                    .await;
-                let fetched_videos = match fetched_videos {
-                    Ok(value) => value,
-                    Err(err) => {
-                        warn!(JsValue::from(err.to_string()));
-                        vec![]
-                    },
-                };
-                videos.set(fetched_videos);
-            });
-            || ()
-        });
+#[derive(Clone, Routable, PartialEq)]
+enum Route {
+    #[at("/")]
+    Home,
+    #[at("/video")]
+    Video,
+    #[at("/*path")]
+    Misc { path: String },
+}
+
+fn switch(route: Route) -> Html {
+    match route {
+        Route::Home => html! { <h1>{ "Home" }</h1> },
+        Route::Video => html! { <Videos /> },
+        Route::Misc { path } => html! {
+                <>
+                    <p>{format!("Matched some other path: {}", path)}</p>
+                    <MyComponent />
+                </>
+            },
     }
+}
 
-    let selected_video = use_state(|| None);
-    let on_video_select = {
-        let selected_video = selected_video.clone();
-        Callback::from(move |video: Video| {
-            selected_video.set(Some(video))
-        })
-    };
-    let details = selected_video.as_ref().map(|video| html! {
-        <VideoDetails video={video.clone()} />
-    });    
+
+#[function_component(MyComponent)]
+pub fn my_component() -> Html {
+    let navigator = use_navigator().unwrap();
+    let onclick = Callback::from(move |_| navigator.push(&Route::Home));
 
     html! {
         <>
-            <h1>{ "RustConf Explorer" }</h1>
-            <div>
-                <h3>{ "Videos to watch" }</h3>
-                <VideosList videos={ (*videos).clone() } on_click={ on_video_select.clone() } />
-            </div>
-            { for details }
+            <button {onclick}>{"Click to go home"}</button>
         </>
+    }
+}
+#[function_component(App)]
+fn app() -> Html {
+    html! {
+        <BrowserRouter>
+            <Switch<Route> render={switch} /> // <- must be child of <BrowserRouter>
+        </BrowserRouter>
     }
     
 }
