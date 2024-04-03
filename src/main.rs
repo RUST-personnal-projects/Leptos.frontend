@@ -10,5 +10,5 @@ fn main() {
     log::warn!("warn");
     log::error!("error");
 
-    mount_to_body(|| view! { <p>"Hello, world!"</p> })
+    mount_to_body(|| view! { <p>"Hello, world! On githubpage"</p> })
 }
