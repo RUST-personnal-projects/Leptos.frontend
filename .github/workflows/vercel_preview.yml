@@ -4,8 +4,9 @@
 name: Leptos CSR Vercel Preview
 
 on:
-  pull_request:
-    branches: [ "main" ]
+  push:
+    branches:
+      - dev
 
   workflow_dispatch:
 
@@ -60,7 +61,7 @@ jobs:
 
     environment:
       name: pre_production
-      url: ${{ steps.preview.outputs.preview-url }}
+      url: ${{ steps.pre_production.outputs.preview-url }}
 
     steps:
       - name: git-checkout
@@ -79,16 +80,16 @@ jobs:
         run: ./trunk build --release
 
       - name: Preview Deploy
-        id: preview
+        id: pre_production
         uses: amondnet/vercel-action@v25.1.1
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          github-comment: true
+          github-comment: false
           working-directory: ./dist
 
       - name: Display Deployed URL
         run: |
-          echo "Deployed app URL: ${{ steps.preview.outputs.preview-url }}" >> $GITHUB_STEP_SUMMARY
+          echo "Deployed app URL: ${{ steps.pre_production.outputs.preview-url }}" >> $GITHUB_STEP_SUMMARY
