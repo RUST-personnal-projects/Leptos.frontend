@@ -1,2 +1,2 @@
-# Frontend-Yew
-Create a front end using Yew
+# Frontend-Leptos
+Create a front end using Leptos
