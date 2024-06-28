@@ -111,7 +111,10 @@ jobs:
           run-id: ${{ steps.get_run_id.outputs.run_id }}
           path: preview-artifact
 
-      - run: ls preview-artifact
+      - name: Move artifact to public
+        run: |
+          mkdir -p public
+          mv preview-artifact/* public/
 
       - name: Build with Trunk
         run: ./trunk build --release
