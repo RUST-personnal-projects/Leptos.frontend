@@ -82,9 +82,9 @@ jobs:
         with:
           github-token: ${{ secrets.BEVY_GH_TOKEN }}
           script: |
-            const owner = '${{ secrets.BEVY_OWNER }}';
-            const repo = '${{ secrets.BEVY_REPO }}';
-            const workflow_id = '${{ secrets.BEVY_PREVIEW_WORKFLOW }}';
+            const owner = '${{ vars.BEVY_OWNER }}';
+            const repo = '${{ vars.BEVY_REPO }}';
+            const workflow_id = '${{ vars.BEVY_PREVIEW_WORKFLOW }}';
 
             const runs = await github.actions.listWorkflowRuns({
               owner,
