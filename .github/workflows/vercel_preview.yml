@@ -86,7 +86,7 @@ jobs:
             const repo = '${{ vars.BEVY_REPO }}';
             const workflow_id = '${{ vars.BEVY_PREVIEW_WORKFLOW }}';
 
-            const runs = await github.actions.listWorkflowRuns({
+            const runs = await github.rest.actions.listWorkflowRuns({
               owner,
               repo,
               workflow_id,
@@ -107,7 +107,7 @@ jobs:
         with:
           name: preview-artifact
           github-token: ${{ secrets.BEVY_GH_TOKEN }}
-          repository: ${{ secrets.BEVY_OWNER }}/${{ secrets.BEVY_REPO }}
+          repository: ${{ vars.BEVY_OWNER }}/${{ vars.BEVY_REPO }}
           run-id: ${{ steps.get_run_id.outputs.run_id }}
           path: preview-artifact
 
