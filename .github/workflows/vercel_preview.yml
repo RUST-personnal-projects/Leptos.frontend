@@ -95,6 +95,8 @@ jobs:
               page: 1
             });
 
+            console.log('Workflow runs response:', runs);
+
             if (runs.data.workflow_runs.length > 0) {
               core.setOutput('run_id', runs.data.workflow_runs[0].id);
             } else {
