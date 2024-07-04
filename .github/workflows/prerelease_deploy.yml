@@ -1,10 +1,12 @@
-name: Leptos CSR Vercel Preview
+name: Deploy frontend on Vercel
 
 on:
   release:
     types: [prereleased]
   workflow_dispatch:
-
+  repository_dispatch:
+    types:
+      - trigger-event
 
 env:
   CARGO_TERM_COLOR: always
@@ -76,11 +78,11 @@ jobs:
         id: get_run_id
         uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.BEVY_GH_TOKEN }}
+          github-token: ${{ secrets.ORG_GH_TOKEN }}
           script: |
             const owner = '${{ vars.BEVY_OWNER }}';
             const repo = '${{ vars.BEVY_REPO }}';
-            const workflow_id = '${{ vars.BEVY_PREVIEW_WORKFLOW }}';
+            const workflow_id = '${{ vars.BEVY_PRERELEASE_WORKFLOW }}';
 
             const runs = await github.rest.actions.listWorkflowRuns({
               owner,
@@ -102,7 +104,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: preview-artifact
-          github-token: ${{ secrets.BEVY_GH_TOKEN }}
+          github-token: ${{ secrets.ORG_GH_TOKEN }}
           repository: ${{ vars.BEVY_OWNER }}/${{ vars.BEVY_REPO }}
           run-id: ${{ steps.get_run_id.outputs.run_id }}
           path: preview-artifact
