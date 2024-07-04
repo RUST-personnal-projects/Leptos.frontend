@@ -1,13 +1,10 @@
 name: Leptos CSR Vercel Preview
 
 on:
-  push:
-    tags:
-      - '*.*.*-rc.*'
-    branches:
-      - dev
-
+  release:
+    types: [prereleased]
   workflow_dispatch:
+
 
 env:
   CARGO_TERM_COLOR: always
