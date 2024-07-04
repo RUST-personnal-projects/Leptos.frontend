@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   repository_dispatch:
     types:
-      - trigger-event
+      - bevy-prerelease-event
 
 env:
   CARGO_TERM_COLOR: always
