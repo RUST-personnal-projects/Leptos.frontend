@@ -1,0 +1,41 @@
+name: Leptos Frontend continous integration
+
+on:
+  push:
+
+jobs:
+    fmt:
+        name: Rustfmt
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: dtolnay/rust-toolchain@nightly
+              with:
+                components: rustfmt
+            - run: cargo fmt --check
+
+    clippy:
+        name: Clippy
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: dtolnay/rust-toolchain@nightly
+              with:
+                components: clippy
+            - uses: Swatinem/rust-cache@v2
+            - name: Install system dependencies
+              run: sudo apt-get update && sudo apt-get install -y g++ pkg-config libx11-dev libasound2-dev libudev-dev libxkbcommon-x11-0
+            - run: cargo clippy -- -D warnings
+
+    test:
+        name: Test
+        runs-on: ubuntu-latest
+        needs: [fmt, clippy]
+        steps:
+            - uses: actions/checkout@v4
+            - uses: dtolnay/rust-toolchain@nightly
+            - uses: Swatinem/rust-cache@v2
+            - name: Install system dependencies
+              run: sudo apt-get update && sudo apt-get install -y g++ pkg-config libx11-dev libasound2-dev libudev-dev libxkbcommon-x11-0
+            - name: Run tests
+              run: cargo test

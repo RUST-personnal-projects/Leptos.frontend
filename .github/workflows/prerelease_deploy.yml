@@ -1,4 +1,4 @@
-name: Deploy frontend on Vercel
+name: Deploy prerelease frontend on Vercel
 
 on:
   release:
